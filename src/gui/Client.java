@@ -6,6 +6,7 @@ package gui;
 
 import api.abo;
 import api.beitrag;
+import api.beitragImpl;
 import api.kommentar;
 import api.like;
 import api.user;
@@ -201,7 +202,7 @@ public class Client {
         return uid;
     }
 
-    Vector<beitrag> getAllBeiträge(String nickname) {
+    Vector<beitrag> getAllBeiträge(int uid) {
         if (this.verwaltung == null) {
             this.initServerConnection();
         }
@@ -209,7 +210,7 @@ public class Client {
         Vector<beitrag> rowData = new Vector<beitrag>();
         try {
             //Hole die Teilnehmer
-            Vector<beitrag> beitragListe = verwaltung.getAllBeiträge(nickname);
+            Vector<beitrag> beitragListe = verwaltung.getAllBeiträge(uid);
 
             for (beitrag b : beitragListe) {
                 rowData.addElement(b);
@@ -284,19 +285,19 @@ public class Client {
         return responseLike;
     }
 
-    int getAllLikes(int bid) {
-        int anzahl = 0;
+    like getAllLikes(int bid, int uid) {
         if (this.verwaltung == null) {
             this.initServerConnection();
         }
+        like responseLike = null;
+
         try {
-            anzahl = verwaltung.getAllLikes(bid);
-            return anzahl;
+            responseLike = verwaltung.getAllLikes(bid, uid);
 
         } catch (RemoteException rx) {
             rx.printStackTrace();
         }
-        return anzahl;
+        return responseLike;
     }
 
     Vector<kommentar> getAllKommentare(int uid) {
@@ -396,19 +397,27 @@ public class Client {
         return rowData;
     }
 
-    int getUid2FromUid(int uid) {
-        int uid2 = 0;
+    Vector<abo> getUid2FromUid(int uid) {
+
         if (this.verwaltung == null) {
             this.initServerConnection();
         }
+        Vector<abo> rowData = new Vector<abo>();
         try {
-            uid2 = verwaltung.getUid2FromUid(uid);
-            return uid2;
+            //Hole die Teilnehmer
+            Vector<abo> aboListe = verwaltung.getAllUid2FromUid(uid);
 
-        } catch (RemoteException rx) {
-            rx.printStackTrace();
+            for (abo a : aboListe) {
+                rowData.addElement(a);
+            }
+
+        } catch (RemoteException re) {
+            System.out.println("RemoteException");
+            System.out.println(re);
+
         }
-        return uid2;
+
+        return rowData;
     }
 
     void aboLoeschen(int uid, int uid2) {
@@ -422,6 +431,72 @@ public class Client {
         } catch (RemoteException ex) {
             ex.printStackTrace();
         }
+    }
+
+    beitrag BeitragEditieren(int bid, String beitragEdit) {
+        if (this.verwaltung == null) {
+            this.initServerConnection();
+        }
+
+        beitrag responseBeitrag = null;
+
+        try {
+            beitrag be = new beitragImpl();
+            be.setBid(bid);
+            be.setText(beitragEdit);
+
+            responseBeitrag = verwaltung.beitragEditieren(bid, beitragEdit);
+
+        } catch (RemoteException rx) {
+            if (responseBeitrag != null) {
+                System.out.println("User wurde bearbeitet");
+            } else {
+                System.out.println("User konnte nicht bearbeitet werden, weil:" + rx);
+            }
+        }
+        return responseBeitrag;
+    }
+
+    void beitragLoeschen(int bid) {
+        if (this.verwaltung == null) {
+            this.initServerConnection();
+        }
+        try {
+            verwaltung.beitragLoeschen(bid);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    int getUidFromBid(int bid2) {
+        int uid = 0;
+        if (this.verwaltung == null) {
+            this.initServerConnection();
+        }
+        try {
+            uid = verwaltung.getUidFromBid(bid2);
+            return uid;
+
+        } catch (RemoteException rx) {
+            rx.printStackTrace();
+        }
+        return uid;
+    }
+
+    int getAllLikesAnzahl(int bid) {
+        int anz = 0;
+        if (this.verwaltung == null) {
+            this.initServerConnection();
+        }
+        try {
+            anz = verwaltung.getAllLikesAnzahl(bid);
+            return anz;
+
+        } catch (RemoteException rx) {
+            rx.printStackTrace();
+        }
+        return anz;
     }
 }
 

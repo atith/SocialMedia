@@ -86,8 +86,8 @@ public class verwaltungImpl extends java.rmi.server.UnicastRemoteObject implemen
         return this.bMapper.getUidFromNickname(nickname);
     }
 
-    public Vector<beitrag>getAllBeiträge(String nickname) throws RemoteException {
-        return this.bMapper.getAllBeiträge(nickname);
+    public Vector<beitrag>getAllBeiträge(int uid) throws RemoteException {
+        return this.bMapper.getAllBeiträge(uid);
     }
 
     public int getBidFromNickname(String nickname) throws RemoteException {
@@ -103,8 +103,11 @@ public class verwaltungImpl extends java.rmi.server.UnicastRemoteObject implemen
         return this.lMapper.createLike(l);
     }
 
-    public int getAllLikes(int bid) throws RemoteException {
-        return this.lMapper.getAllLikes(bid);
+    public like  getAllLikes(int bid, int uid) throws RemoteException {
+        like l = new likeImpl();
+        l.setBid(bid);
+        l.setUid(uid);
+        return this.lMapper.getAllLikes(l);
     }
 
     public Vector<kommentar> getAllKommentare(int bid) throws RemoteException {
@@ -139,6 +142,29 @@ public class verwaltungImpl extends java.rmi.server.UnicastRemoteObject implemen
 
     public void aboLoeschen(int uid, int uid2) throws RemoteException {
         this.aMapper.aboLoeschen(uid, uid2);
+    }
+
+    public beitrag beitragEditieren(int bid, String beitragEdit) throws RemoteException {
+        beitrag be = new beitragImpl();
+        be.setBid(bid);
+        be.setText(beitragEdit);
+        return this.bMapper.beitragEditieren(be);
+    }
+
+    public void beitragLoeschen(int bid) throws RemoteException {
+        this.bMapper.beitragLoeschen(bid);
+    }
+
+    public Vector<abo> getAllUid2FromUid(int uid) throws RemoteException {
+        return this.aMapper.getAllUid2FromUid(uid);
+    }
+
+    public int getUidFromBid(int bid2) throws RemoteException {
+        return this.bMapper.getUidFromBid(bid2);
+    }
+
+    public int getAllLikesAnzahl(int bid) throws RemoteException {
+        return this.lMapper.getAllLikesAnzahl(bid);
     }
 }
 

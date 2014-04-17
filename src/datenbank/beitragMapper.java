@@ -86,7 +86,7 @@ public class beitragMapper {
         return as;
     }
 
-    public Vector<beitrag> getAllBeiträge(String nickname) {
+    public Vector<beitrag> getAllBeiträge(int uid) {
         Connection con = Datenbankverbindung.connection();
 
         Vector<beitrag> result = new Vector<beitrag>();
@@ -95,7 +95,7 @@ public class beitragMapper {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT beitrag.text, beitrag.erstellungszeitpunkt, beitrag.bid FROM beitrag " +
                     "Left join user on beitrag.uid = user.uid " +
-                    "WHERE user.nickname='" + nickname + "'");
+                    "WHERE user.uid='" + uid + "'");
             while (rs.next()) {
                 try {
                     beitrag be = new beitragImpl();
@@ -167,5 +167,62 @@ public class beitragMapper {
             e2.printStackTrace();
         }
         return result;
+    }
+
+    public beitrag beitragEditieren(beitrag newEditBeitrag) {
+        Connection con = Datenbankverbindung.connection();
+        try {
+            Statement stmt = con.createStatement();
+            Timestamp tstamp = new Timestamp(System.currentTimeMillis());
+
+            stmt.executeUpdate("UPDATE beitrag " +
+                    "SET text='" + newEditBeitrag.getText() + "', " +
+                    "erstellungszeitpunkt='" + tstamp + "' " +
+                    "WHERE bid=" + newEditBeitrag.getBid());
+
+        } catch (SQLException e2) {
+            e2.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        return newEditBeitrag;
+    }
+
+    public void beitragLoeschen(int bid) {
+        Connection con = Datenbankverbindung.connection();
+        try {
+            Statement stmt = con.createStatement();
+
+            stmt.executeUpdate("delete from `beitrag` where " +
+                    "bid ='" + bid + "'");
+        } catch (SQLException sx) {
+            sx.printStackTrace();
+        }
+    }
+
+    public int getUidFromBid(int bid2) {
+        int as = 0;
+        // Verbindung zur Datenbank holen
+        Connection con = Datenbankverbindung.connection();
+        try {
+
+            // Leeres SQL-Statement erstellen
+            Statement stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery(
+                    "SELECT uid from beitrag " +
+                    "where bid='" + bid2 + "'");
+
+            rs.next();
+
+            int uid = rs.getInt("uid");
+
+            return uid;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return as;
     }
 }

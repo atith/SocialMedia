@@ -4,10 +4,13 @@
  */
 package gui;
 
+import api.abo;
 import api.user;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Vector;
@@ -74,57 +77,64 @@ public class pinnwand {
         d.insets = new Insets(0, 3, 0, 300);
         search.add(searchField, d);
 
-        JPanel abo = new JPanel(new GridBagLayout());
-        abo.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        JPanel abo2 = new JPanel(new GridBagLayout());
+        abo2.setBorder(BorderFactory.createLineBorder(Color.black));
         GridBagConstraints e = new GridBagConstraints();
         JLabel aboText = new JLabel("Abonennten");
         aboText.setFont(new Font("Arial", Font.BOLD, 18));
         Insets set = new Insets(3, 3, 3, 3);
         e.ipady = 0;
         e.weightx = 0.0;
-        e.gridwidth = 1;
+        e.gridwidth = GridBagConstraints.REMAINDER;
         e.gridx = 0;
-        e.gridy = 1;
+        e.gridy = 0;
         e.insets = new Insets(0, 50, 220, 50);
-        abo.add(aboText, e);
+        abo2.add(aboText, e);
 
         int uid = cl.getUidFromNickname(nickname);
-        int uid2 = cl.getUid2FromUid(uid);
-        Vector<user> users = cl.getAbonenntenToUser(uid, uid2);
 
+        Vector<abo> blah = cl.getUid2FromUid(uid);
+        Vector<user> users = null;
+        for (int h = 0; h < blah.size(); h++) {
+            try {
+                int ohje = 0;
+                ohje = blah.elementAt(h).getUid2();
+                users = cl.getAbonenntenToUser(uid, ohje);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        }
         for (int i = 0; i < users.size(); i++) {
             try {
                 String abonennt = users.elementAt(i).getNickname();
-                // Kann nicht funktionieren, da man einer Methode nur einen Wert und nicht mehrere mitgeben kann
-                // das bedeutet es muss eine ausgewählt werden bspw. durch den klick auf "kommentieren" (siehe like)
-                //Vector<beitragKommentar> test2 = cl.getAllKommentare(test.elementAt(i).getBid());
-                JButton test = new JButton(users.elementAt(i).getNickname());
-                test.setActionCommand(abonennt);
-                test.addActionListener(new aboAnzeigen());
+                this.text = new JTextField(abonennt);
+                text.setEnabled(false);
+                text.addMouseListener(new aboAnzeigen());
                 e.insets = set;
                 e.ipady = 0;
-                e.anchor = GridBagConstraints.WEST;
+                //e.anchor = GridBagConstraints.WEST;
                 e.weightx = 0.0;
                 e.gridwidth = 1;
-                e.gridx = 1;
+                e.gridx = 0;
                 e.gridy++;
 
                 JPanel pane = new JPanel(new GridBagLayout());
                 GridBagConstraints f = new GridBagConstraints();
                 f.insets = set;
                 f.gridx = 0;
-                f.gridy = 0;
+                //f.gridy++;
+                f.gridwidth = GridBagConstraints.REMAINDER;
                 f.gridheight = GridBagConstraints.REMAINDER;
-                pane.add(test, e);
-                abo.add(pane, f);
-
+                pane.add(text, e);
+                abo2.add(pane, f);
             } catch (RemoteException rx) {
                 rx.printStackTrace();
             }
         }
 
-        GridBagConstraints f = new GridBagConstraints();
 
+        GridBagConstraints f = new GridBagConstraints();
         JButton suche = new JButton();
         try {
             Image img = ImageIO.read(getClass().getResource("/resources/search-icon.jpg"));
@@ -132,6 +142,7 @@ public class pinnwand {
         } catch (IOException ex) {
             System.out.println(ex);
         }
+
         suche.setToolTipText("Suchen");
         suche.addActionListener(new suche());
         suche.setPreferredSize(new Dimension(25, 25));
@@ -141,8 +152,6 @@ public class pinnwand {
         f.gridx = 0;
         f.gridy = 1;
         search.add(suche, f);
-
-
         JButton profil = new JButton();
         try {
             Image img = ImageIO.read(getClass().getResource("/resources/user_edit.png"));
@@ -150,6 +159,7 @@ public class pinnwand {
         } catch (IOException ex) {
             System.out.println(ex);
         }
+
         profil.setToolTipText("Profil bearbeiten");
         profil.addActionListener(new profil());
         profil.setPreferredSize(new Dimension(25, 25));
@@ -160,8 +170,6 @@ public class pinnwand {
         f.gridx = 2;
         f.gridy = 1;
         search.add(profil, f);
-
-
         JButton loeschen = new JButton();
         try {
             Image img = ImageIO.read(getClass().getResource("/resources/Remove_user_delete.png"));
@@ -169,6 +177,7 @@ public class pinnwand {
         } catch (IOException ex) {
             System.out.println(ex);
         }
+
         loeschen.addActionListener(new loeschen());
         loeschen.setToolTipText("Profil löschen");
         loeschen.setPreferredSize(new Dimension(25, 25));
@@ -180,7 +189,6 @@ public class pinnwand {
         f.gridy = 1;
         f.insets = new Insets(0, 10, 0, 0);
         search.add(loeschen, f);
-
 //        JButton comment = new JButton();
 //        GridBagConstraints t = new GridBagConstraints();
 //        try {
@@ -199,7 +207,6 @@ public class pinnwand {
 //        t.gridy = 1;
 //        t.insets = new Insets(0, 320, 340, 0);
 //        panel.add(comment, t);
-
 //        JButton like = new JButton();
         GridBagConstraints s = new GridBagConstraints();
 //        try {
@@ -218,7 +225,6 @@ public class pinnwand {
 //        s.gridy = 1;
 //        s.insets = new Insets(0, 0, 340, 0);
 //        panel.add(like, s);
-
         JButton beitrag = new JButton("Neuen Beitrag erstellen");
         s.ipady = 0;
         s.weightx = 0.0;
@@ -227,9 +233,7 @@ public class pinnwand {
         s.gridy = 1;
         s.insets = new Insets(0, 0, 250, 0);
         panel.add(beitrag, s);
-
         beitrag.addActionListener(new beitrag());
-
         JButton anzeigen = new JButton("Beiträge anzeigen");
         s.ipady = 0;
         s.weightx = 0.0;
@@ -238,14 +242,12 @@ public class pinnwand {
         s.gridy = 1;
         s.insets = new Insets(10, 0, 340, 0);
         panel.add(anzeigen, s);
-
         anzeigen.addActionListener(new anzeigen());
 
         this.gesamt = new JPanel(new BorderLayout());
         gesamt.add(panel, BorderLayout.CENTER);
         gesamt.add(search, BorderLayout.NORTH);
-        gesamt.add(abo, BorderLayout.WEST);
-
+        gesamt.add(abo2, BorderLayout.WEST);
         return gesamt;
     }
 
@@ -336,18 +338,41 @@ public class pinnwand {
         }
     }
 
-    class aboAnzeigen implements ActionListener {
+    class aboAnzeigen implements MouseListener {
 
-        public void actionPerformed(ActionEvent e) {
+        String nick = text.getText().trim();
 
-            String nicknameAbo = e.getActionCommand();
-
+//
+//        public void actionPerformed(ActionEvent e) {
+//
+//            String nicknameAbo = e.getActionCommand();
+//
+//            gesamt.removeAll();
+//            pinnwand2 pin = new pinnwand2(cl, nickname, nicknameAbo);
+//            JPanel newPanel = pin.createPanelContent();
+//            gesamt.add(newPanel, BorderLayout.CENTER);
+//            gesamt.validate();
+//            gesamt.repaint();
+//        }
+        public void mouseClicked(MouseEvent e) {
             gesamt.removeAll();
-            pinnwand2 pin = new pinnwand2(cl, nickname, nicknameAbo);
+            pinnwand2 pin = new pinnwand2(cl, nickname, nick);
             JPanel newPanel = pin.createPanelContent();
             gesamt.add(newPanel, BorderLayout.CENTER);
             gesamt.validate();
             gesamt.repaint();
+        }
+
+        public void mousePressed(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
         }
     }
 }

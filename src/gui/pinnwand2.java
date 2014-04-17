@@ -37,10 +37,10 @@ class pinnwand2 {
     private JTextArea textArea;
     private String nicknameAbo;
 
-    public pinnwand2(Client cl, String nickname, String nicknameAbo) {
+    public pinnwand2(Client cl, String nickname, String nick) {
         this.cl = cl;
         this.nickname = nickname;
-        this.nicknameAbo = nicknameAbo;
+        this.nicknameAbo = nick;
 
     }
 
@@ -61,7 +61,9 @@ class pinnwand2 {
         c.gridy = 0;
         panel.add(pinnwand, c);
 
-        Vector<beitrag> test = cl.getAllBeiträge(nicknameAbo);
+        int uid2 = cl.getUidFromNickname(nicknameAbo);
+
+        Vector<beitrag> test = cl.getAllBeiträge(uid2);
 
         for (int i = 0; i < test.size(); i++) {
             try {
@@ -100,13 +102,19 @@ class pinnwand2 {
                 d.gridx = 1;
                 d.gridy = 2;
 
-                JButton likes2 = new JButton("Like");
                 int bid = test.elementAt(i).getBid();
-                String bid0 = Integer.toString(bid);
-                likes2.setActionCommand(bid0);
-                likes2.addActionListener(new likes2());
 
-                panel2.add(likes2, d);
+                like likes2 = cl.getAllLikes(bid, uid2);
+
+                JButton likes = new JButton("Gefällt mir");
+                if (likes2.getAnzahl() != 0 && likes2.getUid() == uid2) {
+                    likes.setText("Gefällt mir nicht mehr");
+                }
+                String bid0 = Integer.toString(bid);
+                likes.setActionCommand(bid0);
+                likes.addActionListener(new likes2());
+
+                panel2.add(likes, d);
                 d = new GridBagConstraints();
                 d.insets = set;
                 d.gridx = 2;
@@ -136,8 +144,7 @@ class pinnwand2 {
                 d.gridy = 1;
                 d.gridwidth = GridBagConstraints.REMAINDER;
 
-                int likes3 = cl.getAllLikes(bid);
-                String lk = Integer.toString(likes3);
+                String lk = Integer.toString(likes2.getAnzahl());
                 panel2.add(new JLabel("Beitrag wurde " + lk + " mal geliked"), d);
                 //  textArea.add(new JButton("Fert"), BorderLayout);
                 panel2.setBorder(BorderFactory.createLineBorder(Color.black));

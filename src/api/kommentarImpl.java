@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  *
  * @author berack
  */
-public class kommentarImpl extends java.rmi.server.RemoteObject implements kommentar {
+public class kommentarImpl extends java.rmi.server.UnicastRemoteObject implements kommentar {
     
     private int kid;
     private Timestamp tmp;

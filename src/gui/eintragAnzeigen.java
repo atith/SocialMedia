@@ -4,7 +4,9 @@
  */
 package gui;
 
+import api.abo;
 import api.beitrag;
+import api.kommentar;
 import api.like;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,10 +16,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.rmi.RemoteException;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -60,31 +62,42 @@ class eintragAnzeigen {
         c.gridy = 0;
         panel.add(pinnwand, c);
 
-        Vector<beitrag> test = cl.getAllBeiträge(nickname);
+        int uid1 = 0;
+        uid1 = cl.getUidFromNickname(nickname);
+
+        Vector<beitrag> test = cl.getAllBeiträge(uid1);
 
         for (int i = 0; i < test.size(); i++) {
             try {
-                String beitrag = test.elementAt(i).getText();
-                // Kann nicht funktionieren, da man einer Methode nur einen Wert und nicht mehrere mitgeben kann
-                // das bedeutet es muss eine ausgewählt werden bspw. durch den klick auf "kommentieren" (siehe like)
-                //Vector<beitragKommentar> test2 = cl.getAllKommentare(test.elementAt(i).getBid());
+                String beitrag = test.elementAt(i).getBid() + "  " + test.elementAt(i).getText();
+
+                Vector<kommentar> test2 = cl.getAllKommentare(test.elementAt(i).getBid());
                 this.textArea = new JTextArea(beitrag);
                 textArea.setPreferredSize(null);
                 textArea.setFont(new Font("Arial", Font.ITALIC, 14));
+
                 c.insets = set;
                 c.ipady = 0;
                 c.anchor = GridBagConstraints.EAST;
                 c.weightx = 0.0;
                 c.gridwidth = 1;
-                c.gridx = 1;
+                c.gridx = 0;
                 c.gridy++;
-                final JPanel panel2 = new JPanel(new GridBagLayout());
+
+                JPanel panel2 = new JPanel(new GridBagLayout());
+
                 GridBagConstraints d = new GridBagConstraints();
                 d.insets = set;
                 d.gridx = 0;
                 d.gridy = 0;
-                d.gridheight = GridBagConstraints.REMAINDER;
+
+                int bid = test.elementAt(i).getBid();
+                String tBid = Integer.toString(bid);
+                textArea.setName(tBid);
+                textArea.addKeyListener(new BeitragEdit(textArea));
+                //d.gridheight = GridBagConstraints.REMAINDER;
                 panel2.add(textArea, d);
+
                 d = new GridBagConstraints();
                 d.insets = set;
                 d.gridx = 1;
@@ -95,11 +108,18 @@ class eintragAnzeigen {
                 d.insets = set;
                 d.gridx = 1;
                 d.gridy = 2;
-                JButton likes = new JButton("Like");
-                int bid = test.elementAt(i).getBid();
+
+                like likes2 = cl.getAllLikes(bid, uid1);
+
+                JButton likes = new JButton("Gefällt mir");
+                if (likes2.getAnzahl() != 0 && likes2.getUid() == uid1) {
+                    likes.setText("Gefällt mir nicht mehr");
+                }
+
                 String bid0 = Integer.toString(bid);
                 likes.setActionCommand(bid0);
                 likes.addActionListener(new likes());
+
                 panel2.add(likes, d);
                 d = new GridBagConstraints();
                 d.insets = set;
@@ -110,27 +130,34 @@ class eintragAnzeigen {
                 comment.setActionCommand(bid1);
                 comment.addActionListener(new Kommentar());
                 panel2.add(comment, d);
-//            JPanel panel3 = new JPanel();
-//            panel3.setBorder(BorderFactory.createLineBorder(Color.red));
-//            for(int h = 0; h < test2.size(); h++){
-//                String kommentar = test2.elementAt(h).getText();
-//                this.kommentArea = new JTextArea(kommentar);
-//                panel3.add(kommentArea);
-//
-//                d = new GridBagConstraints();
-//                d.insets = set;
-//                d.gridx = 1;
-//                d.gridy = 3;
-//                d.gridwidth = GridBagConstraints.REMAINDER;
-//                panel2.add(panel3, d);
-//            }
+
+                int j = 0;
+
+
+                for (int h = 0; h < test2.size(); h++) {
+                    JPanel panel3 = new JPanel();
+                    panel3.setBorder(BorderFactory.createLineBorder(Color.red));
+                    String kommentar = test2.elementAt(h).getText();
+                    this.kommentArea = new JTextArea(kommentar);
+                    panel3.add(kommentArea);
+
+
+                    d = new GridBagConstraints();
+                    d.insets = set;
+                    d.gridx = 1;
+                    d.gridy = 3 + j;
+                    j++;
+                    d.gridwidth = GridBagConstraints.REMAINDER;
+                    panel2.add(panel3, d);
+
+                }
                 d = new GridBagConstraints();
                 d.insets = set;
                 d.gridx = 1;
                 d.gridy = 1;
                 d.gridwidth = GridBagConstraints.REMAINDER;
-                int likes2 = cl.getAllLikes(bid);
-                String lk = Integer.toString(likes2);
+
+                String lk = Integer.toString(likes2.getAnzahl());
                 panel2.add(new JLabel("Beitrag wurde " + lk + " mal geliked"), d);
                 //  textArea.add(new JButton("Fert"), BorderLayout);
                 panel2.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -139,12 +166,111 @@ class eintragAnzeigen {
                 ex.printStackTrace();
             }
         }
+        Vector<abo> blah = cl.getUid2FromUid(uid1);
+
+        for (int x = 0; x < blah.size(); x++) {
+            try {
+                int ohje = 0;
+                ohje = blah.elementAt(x).getUid2();
+                Vector<beitrag> test3 = cl.getAllBeiträge(ohje);
+                for (int i = 0; i < test3.size(); i++) {
+                    try {
+                        String beitrag = test3.elementAt(i).getBid() + "  " + test3.elementAt(i).getText();
+                        Vector<kommentar> test2 = cl.getAllKommentare(test3.elementAt(i).getBid());
+                        this.textArea = new JTextArea(beitrag);
+                        textArea.setPreferredSize(null);
+                        textArea.setFont(new Font("Arial", Font.ITALIC, 14));
+                        c.insets = set;
+                        c.ipady = 0;
+                        c.anchor = GridBagConstraints.EAST;
+                        c.weightx = 0.0;
+                        c.gridwidth = 1;
+                        c.gridx = 0;
+                        c.gridy++;
+                        JPanel panel2 = new JPanel(new GridBagLayout());
+                        GridBagConstraints d = new GridBagConstraints();
+                        d.insets = set;
+                        d.gridx = 0;
+                        d.gridy = 0;
+                        int bid = test3.elementAt(i).getBid();
+                        String tBid = Integer.toString(bid);
+                        textArea.setName(tBid);
+                        textArea.addKeyListener(new BeitragEdit(textArea));
+                        //d.gridheight = GridBagConstraints.REMAINDER;
+                        panel2.add(textArea, d);
+                        d = new GridBagConstraints();
+                        d.insets = set;
+                        d.gridx = 1;
+                        d.gridy = 0;
+                        d.gridwidth = GridBagConstraints.REMAINDER;
+                        panel2.add(new JLabel(nickname + " " + test3.elementAt(i).getTimestamp()), d);
+                        d = new GridBagConstraints();
+                        d.insets = set;
+                        d.gridx = 1;
+                        d.gridy = 2;
+
+                        like likes2 = cl.getAllLikes(bid, uid1);
+
+                        JButton likes = new JButton("Gefällt mir");
+                        if (likes2.getAnzahl() != 0 && likes2.getUid() == uid1) {
+                            likes.setText("Gefällt mir nicht mehr");
+                        }
+                        String bid0 = Integer.toString(bid);
+                        likes.setActionCommand(bid0);
+                        likes.addActionListener(new likes());
+                        panel2.add(likes, d);
+
+                        d = new GridBagConstraints();
+                        d.insets = set;
+                        d.gridx = 2;
+                        d.gridy = 2;
+                        JButton comment = new JButton("Kommentar");
+                        String bid1 = Integer.toString(bid);
+                        comment.setActionCommand(bid1);
+                        comment.addActionListener(new Kommentar());
+                        panel2.add(comment, d);
+                        int j = 0;
+                        for (int h = 0; h < test2.size(); h++) {
+                            JPanel panel3 = new JPanel();
+                            panel3.setBorder(BorderFactory.createLineBorder(Color.red));
+                            String kommentar = test2.elementAt(h).getText();
+                            this.kommentArea = new JTextArea(kommentar);
+                            panel3.add(kommentArea);
+                            d = new GridBagConstraints();
+                            d.insets = set;
+                            d.gridx = 1;
+                            d.gridy = 3 + j;
+                            j++;
+                            d.gridwidth = GridBagConstraints.REMAINDER;
+                            panel2.add(panel3, d);
+                        }
+                        d = new GridBagConstraints();
+                        d.insets = set;
+                        d.gridx = 1;
+                        d.gridy = 1;
+                        d.gridwidth = GridBagConstraints.REMAINDER;
+
+                        int anz = cl.getAllLikesAnzahl(bid);
+                        String lk = Integer.toString(anz);
+                        panel2.add(new JLabel("Beitrag wurde " + lk + " mal geliked"), d);
+                        //  textArea.add(new JButton("Fert"), BorderLayout);
+                        panel2.setBorder(BorderFactory.createLineBorder(Color.black));
+                        panel.add(panel2, c);
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            } catch (RemoteException ex2) {
+                ex2.printStackTrace();
+            }
+        }
+
         JPanel button = new JPanel(new GridBagLayout());
         JButton zurück = new JButton("zurück");
 
         zurück.addActionListener(new zurück());
         GridBagConstraints x = new GridBagConstraints();
-        x.insets = new Insets(0,550,10,0);
+        x.insets = new Insets(0, 550, 10, 0);
         x.ipady = 0;
         x.weightx = 0.0;
         x.gridwidth = GridBagConstraints.REMAINDER;
@@ -181,7 +307,6 @@ class eintragAnzeigen {
             String bid1 = e.getActionCommand();
             int bid = Integer.parseInt(bid1);
             int uid = cl.getUidFromNickname(nickname);
-
             like l = cl.createLike(bid, uid);
 
             if (l != null) {
@@ -195,20 +320,23 @@ class eintragAnzeigen {
             } else {
                 cl.deleteLike(bid, uid);
                 JOptionPane.showMessageDialog(null, "Like wurde entfernt!", "Meldung", JOptionPane.OK_CANCEL_OPTION);
+
                 gesamt.removeAll();
                 eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
                 JPanel newPanel = anz.createPanelContent();
                 gesamt.add(newPanel, BorderLayout.CENTER);
+
                 gesamt.validate();
                 gesamt.repaint();
-            }
 
+            }
         }
     }
 
     private class Kommentar implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
+
             String bidB = e.getActionCommand();
             int bid = Integer.parseInt(bidB);
             gesamt.removeAll();
@@ -219,4 +347,67 @@ class eintragAnzeigen {
             gesamt.repaint();
         }
     }
+
+    private class BeitragEdit implements KeyListener {
+
+        JTextArea textEdit;
+
+        public BeitragEdit(JTextArea text) {
+            this.textEdit = text;
+        }
+
+        public void keyTyped(KeyEvent arg0) {
+        }
+
+        public void keyPressed(KeyEvent e) {
+
+            int bid3 = Integer.parseInt(textEdit.getName());
+            int uid = cl.getUidFromNickname(nickname);
+            int uid2 = cl.getUidFromBid(bid3);
+
+            if (uid == uid2) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+                    String beitragEdit = textEdit.getText().substring(3).trim();
+                    
+
+                    beitrag be = cl.BeitragEditieren(bid3, beitragEdit);
+
+                    if (be == null) {
+                        JOptionPane.showMessageDialog(null, "Beitrag konnnte nicht bearbeitet werden!", "Meldung", JOptionPane.OK_CANCEL_OPTION);
+                        gesamt.removeAll();
+                        eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
+                        JPanel newPanel = anz.createPanelContent();
+                        gesamt.add(newPanel, BorderLayout.CENTER);
+                        gesamt.validate();
+                        gesamt.repaint();
+                    } else {
+                        gesamt.removeAll();
+                        eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
+                        JPanel newPanel = anz.createPanelContent();
+                        gesamt.add(newPanel, BorderLayout.CENTER);
+                        gesamt.validate();
+                        gesamt.repaint();
+                    }
+                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+
+                    int bid4 = Integer.parseInt(textEdit.getName());
+                    
+                    cl.beitragLoeschen(bid4);
+                    gesamt.removeAll();
+                    eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
+                    JPanel newPanel = anz.createPanelContent();
+                    gesamt.add(newPanel, BorderLayout.CENTER);
+                    gesamt.validate();
+                    gesamt.repaint();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Beitrag darf nicht bearbeitet werden!", "Meldung", JOptionPane.OK_CANCEL_OPTION);
+            }
+        }
+
+        public void keyReleased(KeyEvent arg0) {
+        }
+    }
 }
+

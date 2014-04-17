@@ -5,13 +5,12 @@
 package datenbank;
 
 import api.abo;
+import api.aboImpl;
 import api.user;
 import api.userImpl;
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -83,7 +82,7 @@ public class aboMapper {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT u.nickname FROM `user` u " +
                     "Left join abo a on u.uid = a.uid2 " +
-                    "WHERE a.uid2='" + uid2 + "'");
+                    "WHERE a.uid='" + uid + "'");
             while (rs.next()) {
                 try {
                     user u = new userImpl();
@@ -138,6 +137,32 @@ public class aboMapper {
         } catch (SQLException sx) {
             sx.printStackTrace();
         }
+    }
+
+    public Vector<abo> getAllUid2FromUid(int uid) {
+        Connection con = Datenbankverbindung.connection();
+
+        Vector<abo> result = new Vector<abo>();
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT a.uid2 FROM `abo` a " +
+                    "Left join user u on a.uid = u.uid " +
+                    "WHERE a.uid='" + uid + "'");
+            while (rs.next()) {
+                try {
+                    abo a = new aboImpl();
+                    a.setUid2(rs.getInt("uid2"));
+                    result.addElement(a);
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+
+                    break;
+                }
+            }
+        } catch (SQLException e2) {
+            e2.printStackTrace();
+        }
+        return result;
     }
 }
 

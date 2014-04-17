@@ -71,30 +71,33 @@ public class likeMapper {
         return l;
     }
 
-    public int getAllLikes(int bid) {
-        int as = 0;
+    public like getAllLikes(like l) {
         // Verbindung zur Datenbank holen
         Connection con = Datenbankverbindung.connection();
         try {
-
             // Leeres SQL-Statement erstellen
             Statement stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(
-                    "SELECT sum(anzahl) as anzahl from `like` " +
-                    "where bid='" + bid + "'");
+                    "SELECT anzahl, uid from `like` " +
+                    "where bid='" + l.getBid() + "'");
 
             while (rs.next()) {
+                try {
+                    l.setAnzahl(rs.getInt("anzahl"));
+                    l.setUid(rs.getInt("uid"));
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
 
-                int anzahl = rs.getInt("anzahl");
-
-                return anzahl;
+                    break;
+                }
             }
-
+        } catch (RemoteException ex2) {
+            ex2.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return as;
+        return l;
     }
 
     public void likeLoeschen(int uid, int bid) {
@@ -107,5 +110,29 @@ public class likeMapper {
         } catch (SQLException sx) {
             sx.printStackTrace();
         }
+    }
+
+    public int getAllLikesAnzahl(int bid) {
+        int as = 0;
+        // Verbindung zur Datenbank holen
+        Connection con = Datenbankverbindung.connection();
+        try {
+            // Leeres SQL-Statement erstellen
+            Statement stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery(
+                    "SELECT sum(anzahl) as anzahl from `like` " +
+                    "where bid='" + bid + "'");
+
+            while (rs.next()) {
+
+                int anz = rs.getInt("anzahl");
+                return anz;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return as;
     }
 }

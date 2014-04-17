@@ -19,6 +19,7 @@ public class likeImpl extends java.rmi.server.UnicastRemoteObject implements lik
     private int bid;
     private int anzahl;
     private int uid;
+    private String text;
 
     public likeImpl() throws RemoteException{
         super();
@@ -63,5 +64,4 @@ public class likeImpl extends java.rmi.server.UnicastRemoteObject implements lik
     public void setUid(int uid) throws RemoteException {
         this.uid = uid;
     }
-
 }

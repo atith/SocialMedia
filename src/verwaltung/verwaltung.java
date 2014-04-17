@@ -26,13 +26,13 @@ public interface verwaltung extends java.rmi.Remote {
 
     public int getUidFromNickname(String nickname) throws java.rmi.RemoteException;
 
-    public Vector<beitrag> getAllBeiträge(String nickname) throws java.rmi.RemoteException;
+    public Vector<beitrag> getAllBeiträge(int uid) throws java.rmi.RemoteException;
 
     public int getBidFromNickname(String nickname) throws java.rmi.RemoteException;
 
     public like createLike(int bid, int uid) throws java.rmi.RemoteException;
 
-    public int getAllLikes(int bid) throws java.rmi.RemoteException;
+    public like getAllLikes(int bid, int uid) throws java.rmi.RemoteException;
 
     public Vector<kommentar> getAllKommentare(int bid) throws java.rmi.RemoteException;
 
@@ -48,4 +48,13 @@ public interface verwaltung extends java.rmi.Remote {
 
     public void aboLoeschen(int uid, int uid2) throws java.rmi.RemoteException;
 
+    public beitrag beitragEditieren(int bid, String beitragEdit) throws java.rmi.RemoteException;
+
+    public void beitragLoeschen(int bid) throws java.rmi.RemoteException;
+
+    public Vector<abo> getAllUid2FromUid(int uid) throws java.rmi.RemoteException;
+
+    public int getUidFromBid(int bid2) throws java.rmi.RemoteException;
+
+    public int getAllLikesAnzahl(int bid) throws java.rmi.RemoteException;
  }
