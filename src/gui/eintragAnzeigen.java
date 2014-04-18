@@ -69,11 +69,7 @@ class eintragAnzeigen {
 
         for (int i = 0; i < test.size(); i++) {
             try {
-<<<<<<< HEAD
                 String beitrag = test.elementAt(i).getText();
-=======
-                String beitrag = test.elementAt(i).getBid() + "  " + test.elementAt(i).getText();
->>>>>>> e056f15dff419f743b07bac8b7b6db20f2125f94
 
                 Vector<kommentar> test2 = cl.getAllKommentare(test.elementAt(i).getBid());
                 this.textArea = new JTextArea(beitrag);
@@ -179,19 +175,12 @@ class eintragAnzeigen {
                 Vector<beitrag> test3 = cl.getAllBeiträge(ohje);
                 for (int i = 0; i < test3.size(); i++) {
                     try {
-<<<<<<< HEAD
                         String beitrag = test3.elementAt(i).getText();
-=======
-                        String beitrag = test3.elementAt(i).getBid() + "  " + test3.elementAt(i).getText();
->>>>>>> e056f15dff419f743b07bac8b7b6db20f2125f94
                         Vector<kommentar> test2 = cl.getAllKommentare(test3.elementAt(i).getBid());
                         this.textArea = new JTextArea(beitrag);
                         textArea.setPreferredSize(null);
                         textArea.setFont(new Font("Arial", Font.ITALIC, 14));
-<<<<<<< HEAD
                         textArea.setEnabled(false);
-=======
->>>>>>> e056f15dff419f743b07bac8b7b6db20f2125f94
                         c.insets = set;
                         c.ipady = 0;
                         c.anchor = GridBagConstraints.EAST;
@@ -215,10 +204,7 @@ class eintragAnzeigen {
                         d.gridx = 1;
                         d.gridy = 0;
                         d.gridwidth = GridBagConstraints.REMAINDER;
-<<<<<<< HEAD
                         //user muss angepasst werden
-=======
->>>>>>> e056f15dff419f743b07bac8b7b6db20f2125f94
                         panel2.add(new JLabel(nickname + " " + test3.elementAt(i).getTimestamp()), d);
                         d = new GridBagConstraints();
                         d.insets = set;
@@ -251,12 +237,9 @@ class eintragAnzeigen {
                             panel3.setBorder(BorderFactory.createLineBorder(Color.red));
                             String kommentar = test2.elementAt(h).getText();
                             this.kommentArea = new JTextArea(kommentar);
-<<<<<<< HEAD
                             //uid1 = uid von angemeldeten Benutzer
                             //uid von kommentar geholt werden und prüfen
                             kommentArea.setEnabled(false);
-=======
->>>>>>> e056f15dff419f743b07bac8b7b6db20f2125f94
                             panel3.add(kommentArea);
                             d = new GridBagConstraints();
                             d.insets = set;
@@ -386,21 +369,11 @@ class eintragAnzeigen {
             int bid3 = Integer.parseInt(textEdit.getName());
             int uid = cl.getUidFromNickname(nickname);
             int uid2 = cl.getUidFromBid(bid3);
-<<<<<<< HEAD
             //muss angepasst werden, da reingeschrieben werden kann
             if (uid == uid2) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 
-                    String beitragEdit = textEdit.getText();
-=======
-
-            if (uid == uid2) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-
-                    String beitragEdit = textEdit.getText().substring(3).trim();
->>>>>>> e056f15dff419f743b07bac8b7b6db20f2125f94
-                    
-
+                    String beitragEdit = textEdit.getText();                
                     beitrag be = cl.BeitragEditieren(bid3, beitragEdit);
 
                     if (be == null) {

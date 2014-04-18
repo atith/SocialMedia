@@ -105,7 +105,6 @@ public class pinnwand {
                 ex.printStackTrace();
             }
         }
-<<<<<<< HEAD
         if (users != null) {
             for (int i = 0; i < users.size(); i++) {
                 try {
@@ -134,147 +133,83 @@ public class pinnwand {
                 } catch (RemoteException rx) {
                     rx.printStackTrace();
                 }
-=======
-        for (int i = 0; i < users.size(); i++) {
-            try {
-                String abonennt = users.elementAt(i).getNickname();
-                this.text = new JTextField(abonennt);
-                text.setEnabled(false);
-                text.addMouseListener(new aboAnzeigen());
-                e.insets = set;
-                e.ipady = 0;
-                //e.anchor = GridBagConstraints.WEST;
-                e.weightx = 0.0;
-                e.gridwidth = 1;
-                e.gridx = 0;
-                e.gridy++;
 
-                JPanel pane = new JPanel(new GridBagLayout());
                 GridBagConstraints f = new GridBagConstraints();
-                f.insets = set;
+                JButton suche = new JButton();
+                try {
+                    Image img = ImageIO.read(getClass().getResource("/resources/search-icon.jpg"));
+                    suche.setIcon(new ImageIcon(img));
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+
+                suche.setToolTipText("Suchen");
+                suche.addActionListener(new suche());
+                suche.setPreferredSize(new Dimension(25, 25));
+                f.ipady = 0;
+                f.weightx = 0.0;
+                f.gridwidth = 1;
                 f.gridx = 0;
-                //f.gridy++;
-                f.gridwidth = GridBagConstraints.REMAINDER;
-                f.gridheight = GridBagConstraints.REMAINDER;
-                pane.add(text, e);
-                abo2.add(pane, f);
-            } catch (RemoteException rx) {
-                rx.printStackTrace();
->>>>>>> e056f15dff419f743b07bac8b7b6db20f2125f94
+                f.gridy = 1;
+                search.add(suche, f);
+                JButton profil = new JButton();
+                try {
+                    Image img = ImageIO.read(getClass().getResource("/resources/user_edit.png"));
+                    profil.setIcon(new ImageIcon(img));
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+
+                profil.setToolTipText("Profil bearbeiten");
+                profil.addActionListener(new profil());
+                profil.setPreferredSize(new Dimension(25, 25));
+                f.fill = GridBagConstraints.HORIZONTAL;
+                f.ipady = 0;
+                f.weightx = 0.0;
+                f.gridwidth = 1;
+                f.gridx = 2;
+                f.gridy = 1;
+                search.add(profil, f);
+                JButton loeschen = new JButton();
+                try {
+                    Image img = ImageIO.read(getClass().getResource("/resources/Remove_user_delete.png"));
+                    loeschen.setIcon(new ImageIcon(img));
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+
+                loeschen.addActionListener(new loeschen());
+                loeschen.setToolTipText("Profil löschen");
+                loeschen.setPreferredSize(new Dimension(25, 25));
+                f.fill = GridBagConstraints.HORIZONTAL;
+                f.ipady = 0;
+                f.weightx = 0.0;
+                f.gridwidth = 1;
+                f.gridx = 3;
+                f.gridy = 1;
+                f.insets = new Insets(0, 10, 0, 0);
+                search.add(loeschen, f);
+                GridBagConstraints s = new GridBagConstraints();
+                JButton beitrag = new JButton("Neuen Beitrag erstellen");
+                s.ipady = 0;
+                s.weightx = 0.0;
+                s.gridwidth = 1;
+                s.gridx = 1;
+                s.gridy = 1;
+                s.insets = new Insets(0, 0, 250, 0);
+                panel.add(beitrag, s);
+                beitrag.addActionListener(new beitrag());
+                JButton anzeigen = new JButton("Beiträge anzeigen");
+                s.ipady = 0;
+                s.weightx = 0.0;
+                s.gridwidth = 1;
+                s.gridx = 1;
+                s.gridy = 1;
+                s.insets = new Insets(10, 0, 340, 0);
+                panel.add(anzeigen, s);
+                anzeigen.addActionListener(new anzeigen());
             }
         }
-
-
-        GridBagConstraints f = new GridBagConstraints();
-        JButton suche = new JButton();
-        try {
-            Image img = ImageIO.read(getClass().getResource("/resources/search-icon.jpg"));
-            suche.setIcon(new ImageIcon(img));
-        } catch (IOException ex) {
-            System.out.println(ex);
-        }
-
-        suche.setToolTipText("Suchen");
-        suche.addActionListener(new suche());
-        suche.setPreferredSize(new Dimension(25, 25));
-        f.ipady = 0;
-        f.weightx = 0.0;
-        f.gridwidth = 1;
-        f.gridx = 0;
-        f.gridy = 1;
-        search.add(suche, f);
-        JButton profil = new JButton();
-        try {
-            Image img = ImageIO.read(getClass().getResource("/resources/user_edit.png"));
-            profil.setIcon(new ImageIcon(img));
-        } catch (IOException ex) {
-            System.out.println(ex);
-        }
-
-        profil.setToolTipText("Profil bearbeiten");
-        profil.addActionListener(new profil());
-        profil.setPreferredSize(new Dimension(25, 25));
-        f.fill = GridBagConstraints.HORIZONTAL;
-        f.ipady = 0;
-        f.weightx = 0.0;
-        f.gridwidth = 1;
-        f.gridx = 2;
-        f.gridy = 1;
-        search.add(profil, f);
-        JButton loeschen = new JButton();
-        try {
-            Image img = ImageIO.read(getClass().getResource("/resources/Remove_user_delete.png"));
-            loeschen.setIcon(new ImageIcon(img));
-        } catch (IOException ex) {
-            System.out.println(ex);
-        }
-
-        loeschen.addActionListener(new loeschen());
-        loeschen.setToolTipText("Profil löschen");
-        loeschen.setPreferredSize(new Dimension(25, 25));
-        f.fill = GridBagConstraints.HORIZONTAL;
-        f.ipady = 0;
-        f.weightx = 0.0;
-        f.gridwidth = 1;
-        f.gridx = 3;
-        f.gridy = 1;
-        f.insets = new Insets(0, 10, 0, 0);
-        search.add(loeschen, f);
-//        JButton comment = new JButton();
-//        GridBagConstraints t = new GridBagConstraints();
-//        try {
-//            Image img = ImageIO.read(getClass().getResource("/resources/comment.png"));
-//            comment.setIcon(new ImageIcon(img));
-//        } catch (IOException ex) {
-//            System.out.println(ex);
-//        }
-//        comment.setToolTipText("kommentieren");
-//        comment.addActionListener(new profil());
-//        comment.setPreferredSize(new Dimension(25, 25));
-//        t.ipady = 0;
-//        t.weightx = 0.0;
-//        t.gridwidth = 1;
-//        t.gridx = 1;
-//        t.gridy = 1;
-//        t.insets = new Insets(0, 320, 340, 0);
-//        panel.add(comment, t);
-//        JButton like = new JButton();
-        GridBagConstraints s = new GridBagConstraints();
-//        try {
-//            Image img = ImageIO.read(getClass().getResource("/resources/like.jpg"));
-//            like.setIcon(new ImageIcon(img));
-//        } catch (IOException ex) {
-//            System.out.println(ex);
-//        }
-//        like.setToolTipText("like");
-//        like.addActionListener(new profil());
-//        like.setPreferredSize(new Dimension(40, 25));
-//        s.ipady = 0;
-//        s.weightx = 0.0;
-//        s.gridwidth = 1;
-//        s.gridx = 2;
-//        s.gridy = 1;
-//        s.insets = new Insets(0, 0, 340, 0);
-//        panel.add(like, s);
-        JButton beitrag = new JButton("Neuen Beitrag erstellen");
-        s.ipady = 0;
-        s.weightx = 0.0;
-        s.gridwidth = 1;
-        s.gridx = 1;
-        s.gridy = 1;
-        s.insets = new Insets(0, 0, 250, 0);
-        panel.add(beitrag, s);
-        beitrag.addActionListener(new beitrag());
-        JButton anzeigen = new JButton("Beiträge anzeigen");
-        s.ipady = 0;
-        s.weightx = 0.0;
-        s.gridwidth = 1;
-        s.gridx = 1;
-        s.gridy = 1;
-        s.insets = new Insets(10, 0, 340, 0);
-        panel.add(anzeigen, s);
-        anzeigen.addActionListener(new anzeigen());
-
         this.gesamt = new JPanel(new BorderLayout());
         gesamt.add(panel, BorderLayout.CENTER);
         gesamt.add(search, BorderLayout.NORTH);
