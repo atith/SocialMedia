@@ -105,6 +105,7 @@ public class pinnwand {
                 ex.printStackTrace();
             }
         }
+<<<<<<< HEAD
         if (users != null) {
             for (int i = 0; i < users.size(); i++) {
                 try {
@@ -133,6 +134,33 @@ public class pinnwand {
                 } catch (RemoteException rx) {
                     rx.printStackTrace();
                 }
+=======
+        for (int i = 0; i < users.size(); i++) {
+            try {
+                String abonennt = users.elementAt(i).getNickname();
+                this.text = new JTextField(abonennt);
+                text.setEnabled(false);
+                text.addMouseListener(new aboAnzeigen());
+                e.insets = set;
+                e.ipady = 0;
+                //e.anchor = GridBagConstraints.WEST;
+                e.weightx = 0.0;
+                e.gridwidth = 1;
+                e.gridx = 0;
+                e.gridy++;
+
+                JPanel pane = new JPanel(new GridBagLayout());
+                GridBagConstraints f = new GridBagConstraints();
+                f.insets = set;
+                f.gridx = 0;
+                //f.gridy++;
+                f.gridwidth = GridBagConstraints.REMAINDER;
+                f.gridheight = GridBagConstraints.REMAINDER;
+                pane.add(text, e);
+                abo2.add(pane, f);
+            } catch (RemoteException rx) {
+                rx.printStackTrace();
+>>>>>>> e056f15dff419f743b07bac8b7b6db20f2125f94
             }
         }
 
