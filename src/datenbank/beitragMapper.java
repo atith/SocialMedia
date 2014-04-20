@@ -225,4 +225,30 @@ public class beitragMapper {
         }
         return as;
     }
+
+    public String getNickFromBid(int bid) {
+        String nick2 = "";
+        // Verbindung zur Datenbank holen
+        Connection con = Datenbankverbindung.connection();
+        try {
+
+            // Leeres SQL-Statement erstellen
+            Statement stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery(
+                    "SELECT u.nickname from beitrag b " +
+                    "left join user u on b.uid = u.uid " +
+                    "where bid='" + bid + "'");
+
+            rs.next();
+
+            String nick = rs.getString("nickname");
+
+            return nick;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nick2;
+    }
 }

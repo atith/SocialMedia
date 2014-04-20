@@ -164,5 +164,36 @@ public class aboMapper {
         }
         return result;
     }
+
+    public Vector<abo> getAllAbonnenten(int uid, int uid2) {
+        // Verbindung zur Datenbank holen
+        Connection con = Datenbankverbindung.connection();
+
+        Vector <abo> result = new Vector<abo>();
+        try {
+            // Leeres SQL-Statement erstellen
+            Statement stmt = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery(
+                    "SELECT uid, uid2 from `abo` " +
+                    "where uid ='" + uid + "' and uid2 ='" + uid2 + "'");
+
+            while (rs.next()) {
+                try {
+                    abo a = new aboImpl();
+                    a.setUid(rs.getInt("uid"));
+                    a.setUid2(rs.getInt("uid2"));
+                    result.addElement(a);
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }
 

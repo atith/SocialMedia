@@ -65,7 +65,7 @@ class kommentarErzeugen {
         kommentar.setWrapStyleWord(true);
         JScrollPane scroll = new JScrollPane(kommentar);
         pinnwand.setLabelFor(kommentar);
-        scroll.setPreferredSize(new Dimension(250, 900));
+        scroll.setPreferredSize(null);
 
         c.insets = new Insets(3, 3, 3, 3);
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -74,7 +74,7 @@ class kommentarErzeugen {
         c.gridwidth = 0;
         c.gridx = 1;
         c.gridy = 1;
-        c.insets = new Insets(3, 160, 410, 0);
+        //c.insets = new Insets(3, 160, 410, 0);
         panel.add(scroll, c);
 
         JButton comment = new JButton();
@@ -92,12 +92,25 @@ class kommentarErzeugen {
         t.weightx = 0.0;
         t.gridwidth = 1;
         t.gridx = 1;
-        t.gridy = 1;
-        t.insets = new Insets(0, 320, 340, 0);
+        t.gridy = 2;
+        t.insets = new Insets(0, 320, 0, 0);
         panel.add(comment, t);
+
+        JPanel button = new JPanel(new GridBagLayout());
+        GridBagConstraints x = new GridBagConstraints();
+        JButton zurück = new JButton("zurück");
+        zurück.addActionListener(new zurück());
+        x.ipady = 0;
+        x.weightx = 0.0;
+        x.gridwidth = GridBagConstraints.REMAINDER;
+        x.gridx = 1;
+        x.gridy = 1;
+        x.insets = new Insets(0, 500, 0, 0);
+        button.add(zurück, x);
 
         this.gesamt = new JPanel(new BorderLayout());
         gesamt.add(panel, BorderLayout.CENTER);
+        gesamt.add(button, BorderLayout.NORTH);
 
         return gesamt;
     }
@@ -105,13 +118,14 @@ class kommentarErzeugen {
     class commentK implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            kommentar kommentarErzeugen = cl.kommentarErzeugen(kommentar.getText().trim(), bid);
+            int uid = cl.getUidFromNickname(nickname);
+            kommentar kommentarErzeugen = cl.kommentarErzeugen(kommentar.getText().trim(), bid, uid);
 
             if (kommentarErzeugen != null) {
                 JOptionPane.showMessageDialog(null, "Kommentar wurde erzeugt", "Meldung", JOptionPane.OK_CANCEL_OPTION);
                 gesamt.removeAll();
-                pinnwand pn = new pinnwand(cl, nickname);
-                JPanel newPanel = pn.createPanelContent();
+                eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
+                JPanel newPanel = anz.createPanelContent();
                 gesamt.add(newPanel, BorderLayout.CENTER);
                 gesamt.validate();
                 gesamt.repaint();
@@ -120,4 +134,17 @@ class kommentarErzeugen {
             }
         }
     }
+
+    class zurück implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            gesamt.removeAll();
+            eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
+            JPanel newPanel = anz.createPanelContent();
+            gesamt.add(newPanel, BorderLayout.CENTER);
+            gesamt.validate();
+            gesamt.repaint();
+        }
+    }
 }
+

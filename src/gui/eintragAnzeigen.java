@@ -176,7 +176,6 @@ class eintragAnzeigen {
                 for (int i = 0; i < test3.size(); i++) {
                     try {
                         String beitrag = test3.elementAt(i).getText();
-                        Vector<kommentar> test2 = cl.getAllKommentare(test3.elementAt(i).getBid());
                         this.textArea = new JTextArea(beitrag);
                         textArea.setPreferredSize(null);
                         textArea.setFont(new Font("Arial", Font.ITALIC, 14));
@@ -204,8 +203,8 @@ class eintragAnzeigen {
                         d.gridx = 1;
                         d.gridy = 0;
                         d.gridwidth = GridBagConstraints.REMAINDER;
-                        //user muss angepasst werden
-                        panel2.add(new JLabel(nickname + " " + test3.elementAt(i).getTimestamp()), d);
+                        String nick = cl.getNickFromBid(bid);
+                        panel2.add(new JLabel(nick + " " + test3.elementAt(i).getTimestamp()), d);
                         d = new GridBagConstraints();
                         d.insets = set;
                         d.gridx = 1;
@@ -231,15 +230,17 @@ class eintragAnzeigen {
                         comment.setActionCommand(bid1);
                         comment.addActionListener(new Kommentar());
                         panel2.add(comment, d);
+                        Vector<kommentar> test2 = cl.getAllKommentare(test3.elementAt(i).getBid());
                         int j = 0;
                         for (int h = 0; h < test2.size(); h++) {
                             JPanel panel3 = new JPanel();
                             panel3.setBorder(BorderFactory.createLineBorder(Color.red));
                             String kommentar = test2.elementAt(h).getText();
                             this.kommentArea = new JTextArea(kommentar);
-                            //uid1 = uid von angemeldeten Benutzer
-                            //uid von kommentar geholt werden und prüfen
-                            kommentArea.setEnabled(false);
+                            int uid = test2.elementAt(h).getUid();
+                                if (uid == ohje) {
+                                    this.kommentArea.setEnabled(false);
+                                }                           
                             panel3.add(kommentArea);
                             d = new GridBagConstraints();
                             d.insets = set;
@@ -341,7 +342,6 @@ class eintragAnzeigen {
     private class Kommentar implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-
             String bidB = e.getActionCommand();
             int bid = Integer.parseInt(bidB);
             gesamt.removeAll();
@@ -367,36 +367,21 @@ class eintragAnzeigen {
         public void keyPressed(KeyEvent e) {
 
             int bid3 = Integer.parseInt(textEdit.getName());
-            int uid = cl.getUidFromNickname(nickname);
-            int uid2 = cl.getUidFromBid(bid3);
-            //muss angepasst werden, da reingeschrieben werden kann
-            if (uid == uid2) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 
-                    String beitragEdit = textEdit.getText();                
-                    beitrag be = cl.BeitragEditieren(bid3, beitragEdit);
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 
-                    if (be == null) {
-                        JOptionPane.showMessageDialog(null, "Beitrag konnnte nicht bearbeitet werden!", "Meldung", JOptionPane.OK_CANCEL_OPTION);
-                        gesamt.removeAll();
-                        eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
-                        JPanel newPanel = anz.createPanelContent();
-                        gesamt.add(newPanel, BorderLayout.CENTER);
-                        gesamt.validate();
-                        gesamt.repaint();
-                    } else {
-                        gesamt.removeAll();
-                        eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
-                        JPanel newPanel = anz.createPanelContent();
-                        gesamt.add(newPanel, BorderLayout.CENTER);
-                        gesamt.validate();
-                        gesamt.repaint();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                String beitragEdit = textEdit.getText();
+                beitrag be = cl.BeitragEditieren(bid3, beitragEdit);
 
-                    int bid4 = Integer.parseInt(textEdit.getName());
-                    
-                    cl.beitragLoeschen(bid4);
+                if (be == null) {
+                    JOptionPane.showMessageDialog(null, "Beitrag konnnte nicht bearbeitet werden!", "Meldung", JOptionPane.OK_CANCEL_OPTION);
+                    gesamt.removeAll();
+                    eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
+                    JPanel newPanel = anz.createPanelContent();
+                    gesamt.add(newPanel, BorderLayout.CENTER);
+                    gesamt.validate();
+                    gesamt.repaint();
+                } else {
                     gesamt.removeAll();
                     eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
                     JPanel newPanel = anz.createPanelContent();
@@ -404,8 +389,17 @@ class eintragAnzeigen {
                     gesamt.validate();
                     gesamt.repaint();
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Beitrag darf nicht bearbeitet werden!", "Meldung", JOptionPane.OK_CANCEL_OPTION);
+            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+
+                int bid4 = Integer.parseInt(textEdit.getName());
+
+                cl.beitragLoeschen(bid4);
+                gesamt.removeAll();
+                eintragAnzeigen anz = new eintragAnzeigen(cl, nickname);
+                JPanel newPanel = anz.createPanelContent();
+                gesamt.add(newPanel, BorderLayout.CENTER);
+                gesamt.validate();
+                gesamt.repaint();
             }
         }
 

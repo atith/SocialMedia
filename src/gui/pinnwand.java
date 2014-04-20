@@ -130,9 +130,13 @@ public class pinnwand {
                     pane.add(text, e);
                     abo2.add(pane, f);
 
+
                 } catch (RemoteException rx) {
                     rx.printStackTrace();
                 }
+            }
+        }
+
 
                 GridBagConstraints f = new GridBagConstraints();
                 JButton suche = new JButton();
@@ -208,8 +212,7 @@ public class pinnwand {
                 s.insets = new Insets(10, 0, 340, 0);
                 panel.add(anzeigen, s);
                 anzeigen.addActionListener(new anzeigen());
-            }
-        }
+
         this.gesamt = new JPanel(new BorderLayout());
         gesamt.add(panel, BorderLayout.CENTER);
         gesamt.add(search, BorderLayout.NORTH);
@@ -308,18 +311,6 @@ public class pinnwand {
 
         String nick = text.getText().trim();
 
-//
-//        public void actionPerformed(ActionEvent e) {
-//
-//            String nicknameAbo = e.getActionCommand();
-//
-//            gesamt.removeAll();
-//            pinnwand2 pin = new pinnwand2(cl, nickname, nicknameAbo);
-//            JPanel newPanel = pin.createPanelContent();
-//            gesamt.add(newPanel, BorderLayout.CENTER);
-//            gesamt.validate();
-//            gesamt.repaint();
-//        }
         public void mouseClicked(MouseEvent e) {
             gesamt.removeAll();
             pinnwand2 pin = new pinnwand2(cl, nickname, nick);

@@ -5,6 +5,7 @@
 
 package api;
 
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
 /**
  *
@@ -16,6 +17,7 @@ public class kommentarImpl extends java.rmi.server.UnicastRemoteObject implement
     private Timestamp tmp;
     private String text;
     private int bid;
+    private int uid;
 
     public kommentarImpl() throws java.rmi.RemoteException{
         super();
@@ -51,5 +53,13 @@ public class kommentarImpl extends java.rmi.server.UnicastRemoteObject implement
 
     public void setBid(int bid)  throws java.rmi.RemoteException{
         this.bid = bid;
+    }
+
+    public int getUid() throws java.rmi.RemoteException {
+        return this.uid;
+    }
+
+    public void setUid(int uid) throws java.rmi.RemoteException {
+        this.uid = uid;
     }
 }

@@ -114,10 +114,11 @@ public class verwaltungImpl extends java.rmi.server.UnicastRemoteObject implemen
         return this.kMapper.getAllKommentare(bid);
     }
 
-    public kommentar kommentarErzeugen(String text, int bid) throws RemoteException {
+    public kommentar kommentarErzeugen(String text, int bid, int uid) throws RemoteException {
         kommentar newKommentar = new kommentarImpl();
         newKommentar.setText(text);
         newKommentar.setBid(bid);
+        newKommentar.setUid(uid);
         return this.kMapper.kommentarErzeugen(newKommentar);
     }
 
@@ -165,6 +166,14 @@ public class verwaltungImpl extends java.rmi.server.UnicastRemoteObject implemen
 
     public int getAllLikesAnzahl(int bid) throws RemoteException {
         return this.lMapper.getAllLikesAnzahl(bid);
+    }
+
+    public String getNickFromBid(int bid) throws RemoteException {
+        return this.bMapper.getNickFromBid(bid);
+    }
+
+    public Vector<abo> getAllAbonnenten(int uid, int uid2) throws RemoteException {
+        return this.aMapper.getAllAbonnenten(uid, uid2);
     }
 }
 

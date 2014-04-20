@@ -30,7 +30,7 @@ public class kommentarMapper {
 
     public kommentar kommentarErzeugen(kommentar newKommentar) {
         Connection con = Datenbankverbindung.connection();
-        
+
         try {
             Statement stmt = con.createStatement();
 
@@ -44,12 +44,13 @@ public class kommentarMapper {
 
                     Timestamp tstamp = new Timestamp(System.currentTimeMillis());
 
-                    stmt.executeUpdate("INSERT INTO kommentar (kid, erstellungszeitpunkt, text, bid)" +
+                    stmt.executeUpdate("INSERT INTO kommentar (kid, erstellungszeitpunkt, text, bid, uid)" +
                             "values ('" +
                             newKommentar.getKid() + "','" +
                             tstamp + "','" +
                             newKommentar.getText() + "','" +
-                            newKommentar.getBid() + "')");
+                            newKommentar.getBid() + "','" +
+                            newKommentar.getUid() + "')");
                 } catch (RemoteException rx) {
                     rx.printStackTrace();
                 }
@@ -67,7 +68,7 @@ public class kommentarMapper {
 
         try {
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT kommentar.text, kommentar.erstellungszeitpunkt, kommentar.kid FROM kommentar " +
+            ResultSet rs = stmt.executeQuery("SELECT * FROM kommentar " +
                     "WHERE kommentar.bid='" + bid + "'");
 
             while (rs.next()) {
@@ -76,6 +77,7 @@ public class kommentarMapper {
                     be.setTimestamp(rs.getTimestamp("erstellungszeitpunkt"));
                     be.setText(rs.getString("text"));
                     be.setKid(rs.getInt("kid"));
+                    be.setUid(rs.getInt("uid"));
                     result.addElement(be);
                 } catch (RemoteException ex) {
                     ex.printStackTrace();

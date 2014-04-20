@@ -94,13 +94,27 @@ class eintragErzeugen {
         t.insets = new Insets(0, 320, 340, 0);
         panel.add(comment, t);
 
+        JPanel button = new JPanel(new GridBagLayout());
+        GridBagConstraints x = new GridBagConstraints();
+        JButton zurück = new JButton("zurück");
+        zurück.addActionListener(new zurück());
+        x.ipady = 0;
+        x.weightx = 0.0;
+        x.gridwidth = GridBagConstraints.REMAINDER;
+        x.gridx = 1;
+        x.gridy = 1;
+        x.insets = new Insets(0,500,0,0);
+        button.add(zurück, x);
+
         this.gesamt = new JPanel(new BorderLayout());
         gesamt.add(panel, BorderLayout.CENTER);
+        gesamt.add(button, BorderLayout.NORTH);
 
         return gesamt;
     }
 
     class comment implements ActionListener {
+
         public void actionPerformed(ActionEvent e) {
             int uid = cl.getUidFromNickname(nickname);
             beitrag beitragErzeugen = cl.beitragErzeugen(kommentar.getText().trim(), uid);
@@ -112,10 +126,21 @@ class eintragErzeugen {
                 gesamt.add(newPanel, BorderLayout.CENTER);
                 gesamt.validate();
                 gesamt.repaint();
-            }
-            else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Eintrag konnte nicht erzeugt", "Meldung", JOptionPane.OK_CANCEL_OPTION);
             }
+        }
+    }
+
+    class zurück implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            gesamt.removeAll();
+            pinnwand pn = new pinnwand(cl, nickname);
+            JPanel newPanel = pn.createPanelContent();
+            gesamt.add(newPanel, BorderLayout.CENTER);
+            gesamt.validate();
+            gesamt.repaint();
         }
     }
 }

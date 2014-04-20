@@ -54,7 +54,6 @@ public class Client {
         }
         try {
 
-            //Hole die Teilnehmer
             Vector<user> u = verwaltung.findAllUser();
 
             //Der Ergebnisvector wird durchlaufen
@@ -209,7 +208,7 @@ public class Client {
 
         Vector<beitrag> rowData = new Vector<beitrag>();
         try {
-            //Hole die Teilnehmer
+
             Vector<beitrag> beitragListe = verwaltung.getAllBeiträge(uid);
 
             for (beitrag b : beitragListe) {
@@ -231,7 +230,6 @@ public class Client {
         }
 
         try {
-            //Hole die Teilnehmer
             Vector<user> u = verwaltung.findAllUser();
 
             //Der Ergebnisvector wird durchlaufen
@@ -319,7 +317,7 @@ public class Client {
         return rowDataK;
     }
 
-    kommentar kommentarErzeugen(String text, int bid) {
+    kommentar kommentarErzeugen(String text, int bid, int uid) {
         kommentar responseKommentar = null;
 
         if (this.verwaltung == null) {
@@ -327,7 +325,7 @@ public class Client {
         }
 
         try {
-            responseKommentar = verwaltung.kommentarErzeugen(text, bid);
+            responseKommentar = verwaltung.kommentarErzeugen(text, bid, uid);
 
             if (responseKommentar != null) {
                 System.out.println("Neuer Kommentar wurde angelegt!");
@@ -381,7 +379,7 @@ public class Client {
 
         Vector<user> rowData = new Vector<user>();
         try {
-            //Hole die Teilnehmer
+
             Vector<user> userListe = verwaltung.getAbonenntenToUser(uid, uid2);
 
             for (user u : userListe) {
@@ -404,7 +402,7 @@ public class Client {
         }
         Vector<abo> rowData = new Vector<abo>();
         try {
-            //Hole die Teilnehmer
+
             Vector<abo> aboListe = verwaltung.getAllUid2FromUid(uid);
 
             for (abo a : aboListe) {
@@ -497,6 +495,42 @@ public class Client {
             rx.printStackTrace();
         }
         return anz;
+    }
+
+    String getNickFromBid(int bid) {
+        String nick = "";
+        if (this.verwaltung == null) {
+            this.initServerConnection();
+        }
+        try {
+            nick = verwaltung.getNickFromBid(bid);
+            return nick;
+
+        } catch (RemoteException rx) {
+            rx.printStackTrace();
+        }
+        return nick;
+    }
+
+    Vector<abo> getAllAbonnenten(int uid, int uid2) {
+        if (this.verwaltung == null) {
+            this.initServerConnection();
+        }
+        Vector<abo> rowDataA = new Vector<abo>();
+        try {
+            Vector<abo> aboListe = verwaltung.getAllAbonnenten(uid, uid2);
+
+            for (abo a : aboListe){
+                rowDataA.addElement(a);
+            }
+
+        } catch (RemoteException re) {
+            System.out.println("RemoteException");
+            System.out.println(re);
+
+        }
+
+        return rowDataA;
     }
 }
 

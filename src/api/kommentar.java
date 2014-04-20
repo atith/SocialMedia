@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package api;
 
 import java.sql.Timestamp;
@@ -29,4 +28,7 @@ public interface kommentar extends java.rmi.Remote {
 
     public void setBid(int bid) throws java.rmi.RemoteException;
 
+    public int getUid() throws java.rmi.RemoteException;
+
+    public void setUid(int uid) throws java.rmi.RemoteException;
 }
